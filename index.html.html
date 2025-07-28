@@ -1,0 +1,203 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Copywriting Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Header: Build Authority -->
+  <header class="bg-blue-600 text-white py-8">
+    <div class="container mx-auto text-center">
+      <h1 class="text-4xl font-bold">Your Name</h1>
+      <p class="text-xl mt-2">Copywriter Specializing in High-Impact Email Campaigns</p>
+      <p class="text-lg mt-1">Trusted by Industry Leaders to Boost Conversions and Revenue</p>
+    </div>
+  </header>
+
+  <!-- Introduction: Highlight Unique Value Proposition -->
+  <section class="py-10 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-semibold text-center mb-6">Why Work With Me?</h2>
+      <p class="text-lg text-gray-700 max-w-3xl mx-auto text-center">
+        I craft emails that resonate with your audience, drive engagement, and deliver results. My work blends storytelling, concise messaging, and strategic brand voice to build trust and boost conversions. Below are samples showcasing my ability to create compelling copy tailored to business and fitness niches.
+      </p>
+    </div>
+  </section>
+
+  <!-- Portfolio: Easily Navigable Work Samples -->
+  <section class="py-10">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-semibold text-center mb-8">Work Samples</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Sample 1: B2B Value Email -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-bold mb-2">B2B Value Email: Remote Sales Strategy</h3>
+          <p class="text-gray-600 mb-2">Subject: Introvert's Guide to Remote Sales Success</p>
+          <p class="text-gray-600 mb-4">Result: 37% open rate, sent to 50,000 contacts</p>
+          <p class="text-gray-700 text-sm">
+            Hey [First Name],<br>
+            If you're an introvert like me, you know how anxiety-inducing it is to get on sales calls all day. But let me show you the introvert strategy to making six figures as a remote sales rep...
+          </p>
+          <button onclick="document.getElementById('modal-1').classList.remove('hidden')" class="mt-4 text-blue-600 hover:underline">Read Full Email</button>
+        </div>
+        <!-- Sample 2: B2B Promo Email -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-bold mb-2">B2B Promo Email: Shortform Funnel</h3>
+          <p class="text-gray-600 mb-2">Subject: Zero Trust Can Make You $100k/Month</p>
+          <p class="text-gray-600 mb-4">Result: Drove 25 sales calls for client</p>
+          <p class="text-gray-700 text-sm">
+            Hey [First Name],<br>
+            There's absolutely zero trust online anymore. Every scam guru is thirsty for naive money, and getting clients is tougher than ever...
+          </p>
+          <button onclick="document.getElementById('modal-2').classList.remove('hidden')" class="mt-4 text-blue-600 hover:underline">Read Full Email</button>
+        </div>
+        <!-- Sample 3: Fitness Story Email -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-bold mb-2">Fitness Story Email: Overcoming Obstacles</h3>
+          <p class="text-gray-600 mb-2">Subject: Dying for Pennies</p>
+          <p class="text-gray-600 mb-4">Result: 42% open rate, increased engagement by 15%</p>
+          <p class="text-gray-700 text-sm">
+            At 18, I risked my life for pennies to the point that if I made one minor mistake, no one would have heard from me again...
+          </p>
+          <button onclick="document.getElementById('modal-3').classList.remove('hidden')" class="mt-4 text-blue-600 hover:underline">Read Full Email</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials: Highlight Results -->
+  <section class="py-10 bg-gray-200">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-semibold text-center mb-8">What Clients Say</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <p class="text-gray-700 italic">"Your emails doubled our open rates and brought in 20% more revenue. Incredible work!"</p>
+          <p class="text-gray-600 mt-4 font-semibold">- John Doe, CEO of BizGrow</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <p class="text-gray-700 italic">"The storytelling in the fitness campaign connected with our audience like never before. Highly recommend!"</p>
+          <p class="text-gray-600 mt-4 font-semibold">- Jane Smith, FitLife Coaching</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing CTA: Loom Video and Contact -->
+  <section class="py-10 bg-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-semibold mb-6">Ready to Boost Your Conversions?</h2>
+      <p class="text-lg text-gray-700 mb-6">Watch my quick video to learn how I can help your business grow with powerful copywriting.</p>
+      <a href="https://www.loom.com/your-video-link" target="_blank" class="block max-w-xs mx-auto mb-6">
+        <img src="https://via.placeholder.com/300x200?text=Loom+Video+Preview" alt="Loom Video Preview" class="rounded-lg shadow-md">
+      </a>
+      <p class="text-lg text-gray-700 mb-6">Let’s hop on a call to discuss your needs!</p>
+      <a href="mailto:your.email@example.com" class="bg-blue-600 text-white px-8 py-3 rounded-full hover:bg-blue-700">Schedule a Call</a>
+    </div>
+  </section>
+
+  <!-- Modals for Full Email Content -->
+  <div id="modal-1" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg max-w-2xl max-h-[80vh] overflow-y-auto">
+      <h3 class="text-xl font-bold mb-4">B2B Value Email: Remote Sales Strategy</h3>
+      <p class="text-gray-700">
+        Subject: Introvert's Guide to Remote Sales Success<br><br>
+        Hey [First Name],<br>
+        If you're an introvert like me, you know how anxiety-inducing it is to get on sales calls all day. But let me show you the introvert strategy to making six figures as a remote sales rep.<br><br>
+        Because I get it—calling for a pizza delivery is hard enough. Can introverts actually make great salespeople?<br><br>
+        As an introvert, it's simple to hide away in your little comfort bubble and never want to come out. But where do you think that's going to get you in life? At a 9-to-5 job, hiding behind a desk all day, never to be seen or heard from, never able to make your mark on the world, and never able to strive for greatness.<br><br>
+        But that doesn't have to be you. In reality, introverts can make amazing salespeople. In fact, one of the top students of the Remote Protocol is making over $13k a month and is the most shy, introverted, and agreeable person I've ever met.<br><br>
+        If you're an introvert, this is exactly what makes you better than natural extroverts. Check out this video on exactly how to become a six-figure remote sales rep ASAP, even if you're so introverted you can't talk to girls. LOL.<br><br>
+        Peace,<br>
+        [Your Name]
+      </p>
+      <button onclick="document.getElementById('modal-1').classList.add('hidden')" class="mt-4 text-blue-600 hover:underline">Close</button>
+    </div>
+  </div>
+  <div id="modal-2" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg max-w-2xl max-h-[80vh] overflow-y-auto">
+      <h3 class="text-xl font-bold mb-4">B2B Promo Email: Shortform Funnel</h3>
+      <p class="text-gray-700">
+        Subject: Zero Trust Can Make You $100k/Month<br><br>
+        Hey [First Name],<br>
+        There's absolutely zero trust online anymore. Every scam guru is thirsty for naive money, and getting clients is tougher than ever.<br><br>
+        But here's why the current lack of trust is a good thing and how you can profit from it.<br><br>
+        Let me ask you a question: Why do people love Alex Hormozi so much? He's one of the biggest business influencers right now, and somehow, he's managed to get virtually zero hate on anything he does.<br><br>
+        Not only do people love Alex, but they're also desperate to throw their money at him. During his book release, people happily paid $50 per book, including shipping.<br><br>
+        Why? Simply because they trust him.<br><br>
+        He's been able to come up with a system that not only passively builds trust but also monetizes that trust without undoing all of his goodwill.<br><br>
+        This is the exact same system you can use to start closing $100k a month. I call it the Shortform Funnel, and we've been using it to get results for our clients.<br><br>
+        If you want to know exactly how it works and how the Shortform Funnel can be plugged into your business, click here to watch a free 27-minute training on how.<br><br>
+        Peace,<br>
+        [Your Name]
+      </p>
+      <button onclick="document.getElementById('modal-2').classList.add('hidden')" class="mt-4 text-blue-600 hover:underline">Close</button>
+    </div>
+  </div>
+  <div id="modal-3" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg max-w-2xl max-h-[80vh] overflow-y-auto">
+      <h3 class="text-xl font-bold mb-4">Fitness Story Email: Overcoming Obstacles</h3>
+      <p class="text-gray-700">
+        Subject: Dying for Pennies<br><br>
+        At 18, I risked my life for pennies to the point that if I made one minor mistake, no one would have heard from me again. And I wouldn't have found a way to make $20k a month in a year while helping others make at least $3-4k a month.<br><br>
+        But before that, here I was, at the height of 30 meters, sweating in 40°C, working 10 hours a day in inhumane conditions, risking death from simply slipping off the ledge, while having to work in one of the worst environments you can imagine—full of strangers who were drug addicts and alcoholics, who smelled so bad it made me puke.<br><br>
+        Only to come home completely exhausted, just to do it all over again the next day, while being forced by an employer who dictated my paycheck, my free time, my vacations—all while expecting me to be appreciative and give 100% devotion, even though he could fire me for any reason at the drop of a hat.<br><br>
+        By the end, I still wouldn't have enough money to pay rent or buy groceries. I was so broke, I checked my bank account five times a day. I felt like I was going crazy.<br><br>
+        This wasn't life. I knew I had to change something; I just didn't know how. It took me four years to find a strategy that required no product, no tech skills, and not a big budget to make $10k a month in one year.<br><br>
+        Now, the only reason I say all of this is to show you that it doesn't matter where you are right now; your life can change within a few months. Because thanks to the online business I've developed that changed my life, now I dedicate my time to helping others do the same.<br><br>
+        So, if you want the fastest way, I'm hosting a 5-day live event.<br><br>
+        Peace,<br>
+        [Your Name]
+      </p>
+      <button onclick="document.getElementById('modal-3').classList.add('hidden')" class="mt-4 text-blue-600 hover:underline">Close</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-6">
+    <div class="container mx-auto text-center">
+      <p>&copy; 2025 Your Name. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
